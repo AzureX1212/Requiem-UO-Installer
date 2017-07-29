@@ -23,19 +23,18 @@ cache_dir=$HOME/.cache/RequiemUO
 export WINEPREFIX=$HOME/.RequiemUO
 export WINEARCH=win32
 export WINEDEBUG=-all # To get rid of error messages
+winetricks vd=800x600
 
-
-wine_setup() {
-echo "Installing to $install_dir"
-echo "We will install into $WINEPREFIX"
-}
-
+<<<<<<< HEAD
+dir_setup () {
+=======
 dir_setup() {
+>>>>>>> e0191b4dd16071feacccabc8ce14c33957350dab
 #This will initialize our directory for storing the downloaded files for install, we keep it to speed up the script for reinstalls
 mkdir -p $cache_dir
 }
 
-dl_files() {
+dl_files () {
 #Check and download all our our missing files from verified sources. These may be changed later on if we need new sources.
 if [ -f "$cache_dir/UO.exe" ]
 then
@@ -59,7 +58,11 @@ else
 fi
 }
 
-winetricks() {
+<<<<<<< HEAD
+winetricks_set () {
+=======
+winetricks_set() {
+>>>>>>> e0191b4dd16071feacccabc8ce14c33957350dab
 #Setup winetricks from official source, as this is better updated than most distro versions, and installs required dotnet45 library for launcher.
 if [ -f "$cache_dir/winetricks" ]
 then
@@ -82,16 +85,18 @@ wine "$cache_dir/UO.exe"
 clear
 echo "Now UOSteam"
 wine "$cache_dir/UOSteam.exe"
-}
-
-patch_UO () {
 clear
 echo "Now installing Requiem Patcher"
 wine "$cache_dir/ReqAutoPatcher_Setup.exe" > /dev/null
 read -p "Press enter once patcher is completed..."
 }
-final_install () {
+<<<<<<< HEAD
+=======
 
+final_install () {
+>>>>>>> e0191b4dd16071feacccabc8ce14c33957350dab
+
+final_install () {
 /bin/cat <<EOM > $HOME/.RequiemUO/uolaunch
 #!/bin/bash
 cd "$HOME/.RequiemUO/drive_c/Program Files/UOS"
@@ -102,13 +107,12 @@ chmod +x $HOME/.RequiemUO/uolaunch
 
 /bin/cat <<EOM > $HOME/.local/share/applications/uolaunch.desktop
 [Desktop Entry]
-Encoding=UTF-8
-Name="Launch UO"
-Exec="bash $HOME/.RequiemUO/uolaunch"
+Name=UOS
+Exec=env WINEPREFIX="/home/azure/.RequiemUO" wine C:\\\\Program\\ Files\\\\UOS\\\\UOS.exe
 Type=Application
-Terminal=false
-Comment="Launch UOSteam to play Requiem UO"
-Categories=Games
+StartupNotify=true
+Path=/home/azure/.RequiemUO/dosdevices/c:/Program Files/UOS
+Icon=08C6_UOS.0
 EOM
 
 /bin/cat <<EOM > $HOME/.local/share/applications/req_patcher.desktop
@@ -124,7 +128,7 @@ EOM
 }
 
 # This starts the main body of the script.
-# I placed everything in functions incase we want to skip steps later on.
+# Iwinetricks vd=800x600 placed everything in functions incase we want to skip steps later on.
 clear
 echo "You must Understand the following rules:"
 echo "1. This is an EXPERIMENTAL script"
@@ -133,10 +137,9 @@ echo "3. This is not a native souliton, it does require wine"
 echo "4. This is not a stable solution."
 read -p "Press enter when you're ready to proceed..."
 clear
-wine_setup
 dir_setup
 dl_files
-winetricks
+winetricks_set
 install_UO
-patch_UO
 final_install
+winetricks vd=off
