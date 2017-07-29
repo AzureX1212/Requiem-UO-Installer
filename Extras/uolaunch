@@ -1,0 +1,3 @@
+#!/bin/bash
+cd "$HOME/.RequiemUO/drive_c/Program Files/UOS"
+WINEPREFIX="$HOME/.RequiemUO" wine UOS.exe

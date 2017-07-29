@@ -23,13 +23,9 @@ cache_dir=$HOME/.cache/RequiemUO
 export WINEPREFIX=$HOME/.RequiemUO
 export WINEARCH=win32
 export WINEDEBUG=-all # To get rid of error messages
-winetricks vd=800x600
 
-<<<<<<< HEAD
-dir_setup () {
-=======
+
 dir_setup() {
->>>>>>> e0191b4dd16071feacccabc8ce14c33957350dab
 #This will initialize our directory for storing the downloaded files for install, we keep it to speed up the script for reinstalls
 mkdir -p $cache_dir
 }
@@ -58,12 +54,13 @@ else
 fi
 }
 
-<<<<<<< HEAD
-winetricks_set () {
-=======
 winetricks_set() {
->>>>>>> e0191b4dd16071feacccabc8ce14c33957350dab
 #Setup winetricks from official source, as this is better updated than most distro versions, and installs required dotnet45 library for launcher.
+clear
+echo "Winecfg will open to properly generate the prefix, please close the configuration window once it opens."
+WINEPREFIX=$install_dir WINEARCH=win32 winecfg
+read -p "Press enter once winecfg is closed..."
+
 if [ -f "$cache_dir/winetricks" ]
 then
 	echo "Found winetricks"
@@ -73,14 +70,23 @@ else
 fi
 clear
 echo "It may take a while to install dotnet libraries"
-$cache_dir/winetricks -q dotnet45 msxml6 > /dev/null
-$cache_dir/winetricks windowmanagerdecorated=n > /dev/null
+WINEPREFIX=$install_dir $cache_dir/winetricks -q dotnet45 msxml6 > /dev/null
+#WINEPREFIX=$install_dir $cache_dir/winetricks windowmanagerdecorated=n > /dev/null
+#WINEPREFIX=$install_dir $cache_dir/winetricks win7 > /dev/null #sets our wine version over to windows 7 for the launcher
+#WINEPREFIX=$install_dir $cache_dir/winetricks vd=800x600
+}
+
+pre_install () {
+clear
+echo "We are going to change some settings before installing... "
+$cache_dir/winetricks vd=800x600 > /dev/null
 $cache_dir/winetricks win7 > /dev/null #sets our wine version over to windows 7 for the launcher
 }
 
 install_UO () {
 clear
 echo "Installing UO Classic Client"
+WINEPREFIX=$install_dir $cache_dir/winetricks vd=800x600
 wine "$cache_dir/UO.exe"
 clear
 echo "Now UOSteam"
@@ -90,13 +96,11 @@ echo "Now installing Requiem Patcher"
 wine "$cache_dir/ReqAutoPatcher_Setup.exe" > /dev/null
 read -p "Press enter once patcher is completed..."
 }
-<<<<<<< HEAD
-=======
 
-final_install () {
->>>>>>> e0191b4dd16071feacccabc8ce14c33957350dab
+post_install () {
+$cache_dir/winetricks vd=off > /dev/null
+$cache_dir/winetricks windowmanagerdecorated=n > /dev/null
 
-final_install () {
 /bin/cat <<EOM > $HOME/.RequiemUO/uolaunch
 #!/bin/bash
 cd "$HOME/.RequiemUO/drive_c/Program Files/UOS"
@@ -140,6 +144,6 @@ clear
 dir_setup
 dl_files
 winetricks_set
+pre_install
 install_UO
-final_install
-winetricks vd=off
+post_install

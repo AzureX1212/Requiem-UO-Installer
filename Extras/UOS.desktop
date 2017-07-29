@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=UOS
+Exec=env WINEPREFIX="$HOME/.RequiemUO" wine C:\\\\Program\\ Files\\\\UOS\\\\UOS.exe
+Type=Application
+StartupNotify=true
+Path=$HOME/.RequiemUO/dosdevices/c:/Program Files/UOS
+Icon=08C6_UOS.0
