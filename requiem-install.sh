@@ -13,8 +13,8 @@
 # YOUR ANIMUS == 0.
 #
 # REPORT BUGS VIA THIS GITHUB PAGE:
-#
-#
+# https://github.com/AzureX1212/RequiemUOLinuxScript/issues
+
 
 # Declaring basic variables I'll need to run the script
 install_dir=$HOME/.RequiemUO
@@ -22,6 +22,8 @@ cache_dir=$HOME/.cache/RequiemUO
 # and lets set the prefix and arch variable for the entire script
 export WINEPREFIX=$HOME/.RequiemUO
 export WINEARCH=win32
+export WINEDEBUG=-all # To get rid of error messages
+
 
 wine_setup() {
 echo "Installing to $install_dir"
@@ -61,22 +63,30 @@ winetricks() {
 #Setup winetricks from official source, as this is better updated than most distro versions, and installs required dotnet45 library for launcher.
 if [ -f "$cache_dir/winetricks" ]
 then
-	echo "Oh hey look! I found winetricks!"
+	echo "Found winetricks"
 else
 	curl -o $cache_dir/winetricks https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
 	chmod +x $cache_dir/winetricks
 fi
-$cache_dir/winetricks -q dotnet45 > /dev/null
+clear
+echo "It may take a while to install dotnet libraries"
+$cache_dir/winetricks -q dotnet45 msxml6 > /dev/null
 $cache_dir/winetricks windowmanagerdecorated=n > /dev/null
 $cache_dir/winetricks win7 > /dev/null #sets our wine version over to windows 7 for the launcher
 }
 
 install_UO () {
+clear
+echo "Installing UO Classic Client"
 wine "$cache_dir/UO.exe"
+clear
+echo "Now UOSteam"
 wine "$cache_dir/UOSteam.exe"
 }
 
 patch_UO () {
+clear
+echo "Now installing Requiem Patcher"
 wine "$cache_dir/ReqAutoPatcher_Setup.exe" > /dev/null
 read -p "Press enter once patcher is completed..."
 }
@@ -112,6 +122,9 @@ Comment="Launch UOSteam to play Requiem UO"
 Categories=Games
 EOM
 }
+
+# This starts the main body of the script.
+# I placed everything in functions incase we want to skip steps later on.
 clear
 echo "You must Understand the following rules:"
 echo "1. This is an EXPERIMENTAL script"
