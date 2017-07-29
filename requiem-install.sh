@@ -14,7 +14,8 @@
 #
 # REPORT BUGS VIA THIS GITHUB PAGE:
 # https://github.com/AzureX1212/RequiemUOLinuxScript/issues
-
+#
+# That is all.
 
 # Declaring basic variables I'll need to run the script
 install_dir=$HOME/.RequiemUO
