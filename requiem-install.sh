@@ -136,7 +136,7 @@ update () {
 	echo "Updating the script!"
 	mkdir -p $cache_dir
 	curl -o $cache_dir/updater https://raw.githubusercontent.com/AzureX1212/RequiemUOLinuxScript/master/Extras/updater > /dev/null
-	chmod +x $cache_dir/updater
+	chmod +x $cache_dir/updater #make updater executable
 	$cache_dir/updater $PWD
 	exit 0
 }
@@ -149,6 +149,9 @@ while getopts ":ruh" opt; do
 			echo "Removing $install_dir and $cache_dir"
       rm -rf $install_dir
 			rm -rf $cache_dir
+			echo "Removing uolaunch and uopatch"
+			rm $HOME/bin/uolaunch
+			rm $HOME/bin/uopatch
 			exit 0
       ;;
 		u)
