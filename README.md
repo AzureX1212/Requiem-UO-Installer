@@ -30,7 +30,7 @@ All other requirements are satisfied by the script automatically.
 
 1. The script itself requires no installation. Simply download the script using this bit of code in your terminal:
 
-    `curl -o requiem-install.sh  https://git.io/ReqUOScriptD/requiem-install.sh`
+    `curl -o requiem-install.sh  https://raw.githubusercontent.com/AzureX1212/RequiemUOLinuxScript/master/requiem-install.sh`
 
     This will download the script in your current folder.
 
