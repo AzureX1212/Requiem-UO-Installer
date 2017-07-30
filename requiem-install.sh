@@ -18,7 +18,14 @@
 # That is all.
 
 # Declaring basic variables I'll need to run the script
-n
+install_dir=$HOME/.RequiemUO
+cache_dir=$HOME/.cache/RequiemUO
+# and lets set the prefix and arch variable for the entire script
+export WINEPREFIX=$HOME/.RequiemUO
+export WINEARCH=win32
+export WINEDEBUG=-all # To get rid of error messages
+bold=$(tput bold)
+normal=$(tput sgr0)
 
 
 dir_setup() {
@@ -32,6 +39,8 @@ if [ -f "$cache_dir/UO.exe" ]
 then
 	echo "UO.exe Found!"
 else
+	clear
+	echo "Downloading the client."
 	curl -o $cache_dir/UO.exe http://www.13thrones.com/files/UO.exe
 fi
 
@@ -39,6 +48,8 @@ if [ -f "$cache_dir/UOSteam.exe" ]
 then
         echo "UOSteam.exe Found!"
 else
+	clear
+	echo "Downloading UOSteam."
 	curl -o $cache_dir/UOSteam.exe http://uos-update.github.io/UOS_Latest.exe
 fi
 
@@ -46,6 +57,8 @@ if [ -f "$cache_dir/ReqAutoPatcher_Setup.exe" ]
 then
         echo "ReqAutoPatcher_Setup.exe Found!"
 else
+	clear
+	echo "Downloading the patcher."
 	curl -o $cache_dir/ReqAutoPatcher_Setup.exe http://www.13thrones.com/files/ReqAutoPatcher_Setup.exe
 fi
 }
@@ -53,8 +66,6 @@ fi
 winetricks_set() {
 #Setup winetricks from official source, as this is better updated than most distro versions, and installs required dotnet45 library for launcher.
 clear
-echo "Generating wine prefix."
-WINEPREFIX=$install_dir WINEARCH=win32 $cache_dir/winetricks settings list >& /dev/null
 
 if [ -f "$cache_dir/winetricks" ]
 then
@@ -64,7 +75,12 @@ else
 	chmod +x $cache_dir/winetricks
 fi
 clear
+echo "Generating wine prefix."
+WINEPREFIX=$install_dir WINEARCH=win32 $cache_dir/winetricks settings list > /dev/null # sets up the prefix which will fix a bug later on
+clear
 echo "It may take a while to install dotnet libraries"
+echo ""
+echo "Do not close the terminal, the output is suppressed unless an error occurs!"
 WINEPREFIX=$install_dir $cache_dir/winetricks -q dotnet45 msxml6 > /dev/null
 #WINEPREFIX=$install_dir $cache_dir/winetricks windowmanagerdecorated=n > /dev/null
 #WINEPREFIX=$install_dir $cache_dir/winetricks win7 > /dev/null #sets our wine version over to windows 7 for the launcher
@@ -96,21 +112,58 @@ post_install () {
 $cache_dir/winetricks vd=off > /dev/null
 $cache_dir/winetricks windowmanagerdecorated=n > /dev/null
 
-/bin/cat <<EOM > $HOME/.RequiemUO/uolaunch
-#!/bin/bash
-cd "$HOME/.RequiemUO/drive_c/Program Files/UOS"
-WINEPREFIX="$HOME/.RequiemUO" wine UOS.exe
-EOM
+mkdir -p $HOME/bin
+curl -o $HOME/bin/uolaunch "https://raw.githubusercontent.com/AzureX1212/RequiemUOLinuxScript/master/Extras/uolaunch" > /dev/null
+curl -o $HOME/bin/uopatch "https://raw.githubusercontent.com/AzureX1212/RequiemUOLinuxScript/master/Extras/uopatch" > /dev/null
+chmod +x $HOME/bin/uolaunch
+chmod +x $HOME/bin/uopatch
+touch $cache_dir/.installed
 
-chmod +x $HOME/.RequiemUO/uolaunch
+}
 
+help_m () {
+	echo "Reqiuem UO Linux Helper:"
+	echo "	-u	Uninstall UO."
+	echo "	-h	Show this message."
+	echo "	${bold}uolaunch ${normal}from a terminal to launch UO. "
+	echo "	${bold}uopatch ${normal}from a terminal to patch UO."
+	echo "Or you can use the shortcuts on the desktop, however they may not work properly"
+}
+
+update () {
+	clear
+	echo "Updating the script!"
+	mkdir -p $cache_dir
+	curl -o $cache_dir/updater > /dev/null
+	$cache_dir/updater $PWD
+	exit 0
 }
 # This starts the main body of the script.
 # I placed everything in functions incase we want to skip steps later on.
+
+while getopts ":uh" opt; do
+  case $opt in
+    u)
+			echo "Removing $install_dir and $cache_dir"
+      rm -rf $install_dir
+			rm -rf $cache_dir
+			exit 0
+      ;;
+		h)
+      help_m
+		  exit 0
+		  ;;
+		\?)
+		  echo "Invalid option: -$OPTARG" >&2
+		  exit 1
+		  ;;
+  esac
+done
+
 clear
 echo "You must Understand the following rules:"
 echo "1. This is an EXPERIMENTAL script"
-echo "2. Do not post issues with the script to development team"
+echo "2. Do not post issues with this script to the development team"
 echo "3. This is not a native souliton, it does require wine"
 echo "4. This is not a stable solution."
 read -p "Press enter when you're ready to proceed..."
@@ -121,3 +174,6 @@ winetricks_set
 pre_install
 install_UO
 post_install
+clear
+help_m
+read -p "Press enter to exit..."
