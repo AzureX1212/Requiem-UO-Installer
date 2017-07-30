@@ -5,5 +5,9 @@ install=$1
 mkdir -p $install_dir
 curl -o $install/requiem-install.sh https://raw.githubusercontent.com/AzureX1212/RequiemUOLinuxScript/master/requiem-install.sh > /dev/null
 chmod +x $install/requiem-install.sh
+curl -o $HOME/bin/uolaunch "https://raw.githubusercontent.com/AzureX1212/RequiemUOLinuxScript/master/Extras/uolaunch" > /dev/null
+curl -o $HOME/bin/uopatch "https://raw.githubusercontent.com/AzureX1212/RequiemUOLinuxScript/master/Extras/uopatch" > /dev/null
+chmod +x $HOME/bin/uolaunch
+chmod +x $HOME/bin/uopatch
 echo "Update completed, please re-run the script"
 exit 0
