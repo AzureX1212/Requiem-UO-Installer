@@ -18,12 +18,7 @@
 # That is all.
 
 # Declaring basic variables I'll need to run the script
-install_dir=$HOME/.RequiemUO
-cache_dir=$HOME/.cache/RequiemUO
-# and lets set the prefix and arch variable for the entire script
-export WINEPREFIX=$HOME/.RequiemUO
-export WINEARCH=win32
-export WINEDEBUG=-all # To get rid of error messages
+n
 
 
 dir_setup() {
@@ -58,9 +53,8 @@ fi
 winetricks_set() {
 #Setup winetricks from official source, as this is better updated than most distro versions, and installs required dotnet45 library for launcher.
 clear
-echo "Winecfg will open to properly generate the prefix, please close the configuration window once it opens."
-WINEPREFIX=$install_dir WINEARCH=win32 winecfg
-read -p "Press enter once winecfg is closed..."
+echo "Generating wine prefix."
+WINEPREFIX=$install_dir WINEARCH=win32 $cache_dir/winetricks settings list >& /dev/null
 
 if [ -f "$cache_dir/winetricks" ]
 then
@@ -110,30 +104,9 @@ EOM
 
 chmod +x $HOME/.RequiemUO/uolaunch
 
-/bin/cat <<EOM > $HOME/.local/share/applications/uolaunch.desktop
-[Desktop Entry]
-Name=UOS
-Exec=env WINEPREFIX="/home/azure/.RequiemUO" wine C:\\\\Program\\ Files\\\\UOS\\\\UOS.exe
-Type=Application
-StartupNotify=true
-Path=/home/azure/.RequiemUO/dosdevices/c:/Program Files/UOS
-Icon=08C6_UOS.0
-EOM
-
-/bin/cat <<EOM > $HOME/.local/share/applications/req_patcher.desktop
-[Desktop Entry]
-Encoding=UTF-8
-Name="Launch Requiem Patcher"
-Exec="WINEPREFIX=$HOME/.RequiemUO wine $HOME/.RequiemUO/drive_c/Program Files/Requiem\ AutoPatcher"
-Type=Application
-Terminal=false
-Comment="Launch UOSteam to play Requiem UO"
-Categories=Games
-EOM
 }
-
 # This starts the main body of the script.
-# Iwinetricks vd=800x600 placed everything in functions incase we want to skip steps later on.
+# I placed everything in functions incase we want to skip steps later on.
 clear
 echo "You must Understand the following rules:"
 echo "1. This is an EXPERIMENTAL script"

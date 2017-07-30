@@ -1,0 +1,20 @@
+#!/bin/bash
+# This is a additional helper script to the UO Installer Helper that allows a user to patch using RequiemUO's patcher.
+# This file needs to exist because of an issue with the patcher on a variety of newer wine installs preventing from working properly
+# changes made in this file are reverted on exit to prevent these changes being stuck in the prefix for the client.
+
+# Declaring basic variables I'll need to run the script
+install_dir=$HOME/.RequiemUO
+cache_dir=$HOME/.cache/RequiemUO
+# and lets set the prefix and arch variable for the entire script
+export WINEPREFIX=$HOME/.RequiemUO
+export WINEARCH=win32
+export WINEDEBUG=-all # To get rid of error messages
+
+clear
+echo "DO NOT CLOSE THIS WINDOW UNTIL PATCHER IS COMPLETE, YOU WILL MESS UP YOUR INSTALL IF YOU DO SO!"
+read -p "Press enter when you are ready..."
+$cache_dir/winetricks vd=800x600 > /dev/null
+$cache_dir/winetricks win7 > /dev/null
+wine "$install_dir/drive_c/Program Files/Requiem AutoPatcher/ReqLauncher.exe"
+$cache_dir/winetricks vd=off > /dev/null
