@@ -123,32 +123,37 @@ touch $cache_dir/.installed
 
 help_m () {
 	echo "Reqiuem UO Linux Helper:"
-	echo "	-u	Uninstall UO."
+	echo "	-r	Uninstall UO."
+	echo "	-u	Update this script."
 	echo "	-h	Show this message."
 	echo "	${bold}uolaunch ${normal}from a terminal to launch UO. "
 	echo "	${bold}uopatch ${normal}from a terminal to patch UO."
-	echo "Or you can use the shortcuts on the desktop, however they may not work properly"
+	echo "Or you can use the shortcuts on the desktop, however ${bold}they may not work properly.${normal}"
 }
 
 update () {
 	clear
 	echo "Updating the script!"
 	mkdir -p $cache_dir
-	curl -o $cache_dir/updater > /dev/null
+	curl -o $cache_dir/updater https://raw.githubusercontent.com/AzureX1212/RequiemUOLinuxScript/master/Extras/updater > /dev/null
+	chmod +x $cache_dir/updater
 	$cache_dir/updater $PWD
 	exit 0
 }
 # This starts the main body of the script.
 # I placed everything in functions incase we want to skip steps later on.
 
-while getopts ":uh" opt; do
+while getopts ":ruh" opt; do
   case $opt in
-    u)
+    r)
 			echo "Removing $install_dir and $cache_dir"
       rm -rf $install_dir
 			rm -rf $cache_dir
 			exit 0
       ;;
+		u)
+			update
+			;;
 		h)
       help_m
 		  exit 0

@@ -2,7 +2,8 @@
 install_dir=$HOME/.RequiemUO
 cache_dir=$HOME/.cache/RequiemUO
 install=$1
-curl -o $install/requiem-install.sh "https://raw.githubusercontent.com/AzureX1212/RequiemUOLinuxScript/master/requiem-install.sh" > /dev/null
+mkdir -p $install_dir
+curl -o $install/requiem-install.sh https://raw.githubusercontent.com/AzureX1212/RequiemUOLinuxScript/master/requiem-install.sh > /dev/null
 chmod +x $install/requiem-install.sh
-$install/requiem-install.sh
+echo "Update completed, please re-run the script"
 exit 0
