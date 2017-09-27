@@ -81,7 +81,7 @@ clear
 echo "It may take a while to install dotnet libraries"
 echo ""
 echo "Do not close the terminal, the output is suppressed unless an error occurs!"
-WINEPREFIX=$install_dir $cache_dir/winetricks -q dotnet45 msxml6 > /dev/null
+WINEPREFIX=$install_dir $cache_dir/winetricks -q dotnet45 dotnet20 msxml6 > /dev/null
 #WINEPREFIX=$install_dir $cache_dir/winetricks windowmanagerdecorated=n > /dev/null
 #WINEPREFIX=$install_dir $cache_dir/winetricks win7 > /dev/null #sets our wine version over to windows 7 for the launcher
 #WINEPREFIX=$install_dir $cache_dir/winetricks vd=800x600
