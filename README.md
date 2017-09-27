@@ -10,7 +10,7 @@ It works by using wine's [prefix](https://wiki.winehq.org/FAQ#Can_I_store_the_vi
 
 The script requires little requirements to run, however users will need **wine** (or wine-staging but is not recommended) and **curl** to install Ultima Online.
 
-* Ubuntu/Debian: `sudo apt-get wine curl`
+* Ubuntu/Debian: `sudo apt-get install wine curl`
 
 * Fedora: `sudo dnf install wine curl`
 
@@ -18,7 +18,7 @@ The script requires little requirements to run, however users will need **wine**
 
 * Arch (really?): `sudo pacman -S wine curl`
 
-* Gentoo: `Good luck! You probably know how.`
+* Gentoo: `Good luck!`
 
 One important requirement is that **wine needs to be at 1.7 or above.** This means those on Ubuntu 16.04 or older releases may need to seek an alternative source for wine. One can check their version by running the following:
 
