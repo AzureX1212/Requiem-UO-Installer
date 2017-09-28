@@ -46,7 +46,7 @@ fi
 
 if [ -f "$cache_dir/UOSteam.exe" ]
 then
-        echo "UOSteam.exe Found!"
+    echo "UOSteam.exe Found!"
 else
 	clear
 	echo "Downloading UOSteam."
@@ -55,7 +55,7 @@ fi
 
 if [ -f "$cache_dir/ReqAutoPatcher_Setup.exe" ]
 then
-        echo "ReqAutoPatcher_Setup.exe Found!"
+    echo "ReqAutoPatcher_Setup.exe Found!"
 else
 	clear
 	echo "Downloading the patcher."
@@ -81,7 +81,7 @@ clear
 echo "It may take a while to install dotnet libraries"
 echo ""
 echo "Do not close the terminal, the output is suppressed unless an error occurs!"
-WINEPREFIX=$install_dir $cache_dir/winetricks -q dotnet45 dotnet20 msxml6 > /dev/null
+WINEPREFIX=$install_dir $cache_dir/winetricks -q dotnet45 msxml6 > /dev/null
 #WINEPREFIX=$install_dir $cache_dir/winetricks windowmanagerdecorated=n > /dev/null
 #WINEPREFIX=$install_dir $cache_dir/winetricks win7 > /dev/null #sets our wine version over to windows 7 for the launcher
 #WINEPREFIX=$install_dir $cache_dir/winetricks vd=800x600
@@ -147,7 +147,7 @@ while getopts ":ruh" opt; do
   case $opt in
     r)
 			echo "Removing $install_dir and $cache_dir"
-      rm -rf $install_dir
+            rm -rf $install_dir
 			rm -rf $cache_dir
 			echo "Removing uolaunch and uopatch"
 			rm $HOME/bin/uolaunch
@@ -161,7 +161,7 @@ while getopts ":ruh" opt; do
       help_m
 		  exit 0
 		  ;;
-		\?)
+       \?)
 		  echo "Invalid option: -$OPTARG" >&2
 		  exit 1
 		  ;;

@@ -8,15 +8,18 @@ It works by using wine's [prefix](https://wiki.winehq.org/FAQ#Can_I_store_the_vi
 
 ## Requirements:
 
-The script requires little requirements to run, however users will need **wine** (or wine-staging but is not recommended) and **curl** to install Ultima Online.
+The script requires little requirements to run, however users will need **wine** (or wine-staging but is not recommended),**curl**, **winbind**, and **cabextract** to install Ultima Online.
 
-* Ubuntu/Debian: `sudo apt-get install wine curl`
+_Adittional: Package names may not match, use your package managers search function!_
+_Additional Additional: cabextract and/or winbind may be a reqiurement of wine in your distribution!_
 
-* Fedora: `sudo dnf install wine curl`
+* Ubuntu/Debian: `sudo apt-get install wine-stable curl cabextract winbind`
 
-* OpenSUSE: `sudo zypper in wine curl`
+* Fedora: `sudo dnf install wine curl cabextract winbind`
 
-* Arch (really?): `sudo pacman -S wine curl`
+* OpenSUSE: `sudo zypper in wine curl cabextract winbind`
+
+* Arch Linux (really?): `sudo pacman -S wine curl cabextract winbind`
 
 * Gentoo: `Good luck!`
 
