@@ -122,7 +122,7 @@ fileCount=1
 
 echo "Downloading update manifest..."
 
-curl -s -o "$cache_dir/Updates.xml" "$contentUrl"
+curl --silent -o "$cache_dir/Updates.xml" "$contentUrl"
     
 mkdir -p $dl_dir
 
@@ -205,6 +205,7 @@ else
 fi
 
 rm -rf $dl_dir
+sleep 5
 clear
 }
 

@@ -2,9 +2,10 @@
 
 This script is designed to use wine and a wonderful helper script winetricks to automate an installation of the Ultima Online Client and Reqiuem UO Patcher to play on the [Reqiuem Shard](http://www.13thrones.com/wordpress/).
 
-It's designed by AzureX and is **--EXPERIMENTAL--**. Although it is offered by Requiem UO staff, we ask that you report all issues via [git-hub's issue tracker for the project](https://github.com/AzureX1212/RequiemUOLinuxScript/issues). Do not use the ReqiuemUO Trello or any other issue tracker.
-
 It works by using wine's [prefix](https://wiki.winehq.org/FAQ#Can_I_store_the_virtual_Windows_installation_somewhere_other_than_.7E.2F.wine.3F) system. The script will isolate RequiemUO in it's own prefix, and make changes to it as required. This allows the script to fully control wine's settings and implement fixes without breaking user's other wine installations. It's core functionality of other projects like [PlayOnLinux](https://www.playonlinux.com/en/).
+
+
+It's designed by AzureX and is **--EXPERIMENTAL--**. Although it is offered by Requiem UO staff, we ask that you report all issues via [git-hub's issue tracker for the project](https://github.com/AzureX1212/RequiemUOLinuxScript/issues). Do not use the ReqiuemUO Trello or any other issue tracker.
 
 ## Requirements:
 
@@ -76,6 +77,7 @@ All other requirements are satisfied by the script automatically.
 
 If for any reason you have an issue during the installation, or the script/terminal has crashed during install, simply use the scripts switch **-r** to remove the installation and rerun the script.
 
+It's also a good idea to **update** the script using **-u**. Many bugs may have been fixed in newer versions of the script!
 
 **Verify** that you have **wine >= 1.7**.
 
