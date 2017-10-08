@@ -55,52 +55,12 @@ else
 	echo "Downloading UOSteam."
 	curl -o $cache_dir/UOSteam.exe http://uos-update.github.io/UOS_Latest.exe
 fi
-
-if [ -f "$cache_dir/ReqAutoPatcher_Setup.exe" ]
-then
-    echo "ReqAutoPatcher_Setup.exe Found!"
-else
-	clear
-	echo "Downloading the patcher."
-	curl -o $cache_dir/ReqAutoPatcher_Setup.exe http://www.13thrones.com/files/ReqAutoPatcher_Setup.exe
-fi
-}
-
-winetricks_set() {
-#Setup winetricks from official source, as this is better updated than most distro versions, and installs required dotnet45 library for launcher.
-clear
-
-if [ -f "$cache_dir/winetricks" ]
-then
-	echo "Found winetricks"
-else
-	curl -o $cache_dir/winetricks https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
-	chmod +x $cache_dir/winetricks
-fi
-clear
-echo "Generating wine prefix."
-WINEPREFIX=$install_dir WINEARCH=win32 $cache_dir/winetricks settings list > /dev/null # sets up the prefix which will fix a bug later on
-clear
-#echo "It may take a while to install dotnet libraries"
-#echo ""
-#echo "Do not close the terminal, the output is suppressed unless an error occurs!"
-#WINEPREFIX=$install_dir $cache_dir/winetricks -q dotnet45 msxml6 > /dev/null
-#WINEPREFIX=$install_dir $cache_dir/winetricks windowmanagerdecorated=n > /dev/null
-#WINEPREFIX=$install_dir $cache_dir/winetricks win7 > /dev/null #sets our wine version over to windows 7 for the launcher
-#WINEPREFIX=$install_dir $cache_dir/winetricks vd=800x600
-}
-
-pre_install () {
-clear
-echo "We are going to change some settings before installing... "
-$cache_dir/winetricks vd=800x600 > /dev/null
-$cache_dir/winetricks win7 > /dev/null #sets our wine version over to windows 7 for the launcher
 }
 
 install_UO () {
 clear
 echo "Installing UO Classic Client"
-WINEPREFIX=$install_dir $cache_dir/winetricks vd=800x600
+#WINEPREFIX=$install_dir $cache_dir/winetricks vd=800x600
 wine "$cache_dir/UO.exe"
 clear
 echo "Now UOSteam"
@@ -110,61 +70,44 @@ clear
 
 patch_UO () {
 clear
-filenamesList=$(xmllint --shell $cache_dir/Updates.xml <<< `echo 'cat /Updates/UpdateCollection/UpdateObject/DisplayName/text()'` | sed -e 's/ -------//' -e 's/\/ >//' -e '/^\s*$/d')
-
-fileDl=$(xmllint --shell $cache_dir/Updates.xml <<< `echo 'cat /Updates/UpdateCollection/UpdateObject/FileName/text()'` | sed -e 's/ -------//' -e 's/\/ >//' -e '/^\s*$/d')
-
-hashList=$(xmllint --shell $cache_dir/Updates.xml <<< `echo 'cat /Updates/UpdateCollection/UpdateObject/Hash/text()'` | sed -e 's/ -------//' -e 's/\/ >//' -e '/^\s*$/d')
-
-urlList=$(xmllint --shell $cache_dir/Updates.xml <<< `echo 'cat /Updates/UpdateCollection/UpdateObject/URL/text()'` | sed -e 's/ -------//' -e 's/\/ >//' -e '/^\s*$/d')
-
-fileCount=1
-
+touch $cache_dir/Updates.xml
 echo "Downloading update manifest..."
-
-curl --silent -o "$cache_dir/Updates.xml" "$contentUrl"
-    
+curl --silent -o $cache_dir/Updates.xml "$contentUrl"   
 mkdir -p $dl_dir
-
 declare -a Files
 declare -a Hash
 declare -a Url
 declare -a Dl
-
-
+filenamesList=$(xmllint --shell $cache_dir/Updates.xml <<< `echo 'cat /Updates/UpdateCollection/UpdateObject/DisplayName/text()'` | sed -e 's/ -------//' -e 's/\/ >//' -e '/^\s*$/d')
+fileDl=$(xmllint --shell $cache_dir/Updates.xml <<< `echo 'cat /Updates/UpdateCollection/UpdateObject/FileName/text()'` | sed -e 's/ -------//' -e 's/\/ >//' -e '/^\s*$/d')
+hashList=$(xmllint --shell $cache_dir/Updates.xml <<< `echo 'cat /Updates/UpdateCollection/UpdateObject/Hash/text()'` | sed -e 's/ -------//' -e 's/\/ >//' -e '/^\s*$/d')
+urlList=$(xmllint --shell $cache_dir/Updates.xml <<< `echo 'cat /Updates/UpdateCollection/UpdateObject/URL/text()'` | sed -e 's/ -------//' -e 's/\/ >//' -e '/^\s*$/d')
+fileCount=1
 for file in $filenamesList 
 do
 	Files[$fileCount]=$file
     fileCount=$(($fileCount+1))
 done
-
 fileCount=1
-
 for file in $hashList
 do 
     Hash[$fileCount]=$file
     fileCount=$(($fileCount+1))
 done
-
 fileCount=1
-
 for file in $urlList
 do
     Url[$fileCount]=$file
     fileCount=$(($fileCount+1))
 done
-
 fileCount=1
-
 for file in $fileDl
 do
 	Dl[$fileCount]=$file
     fileCount=$(($fileCount+1))
 done
-
 lengthFiles=${#Files[@]}
 lengthHash=${#Hash[@]}
-
 if [ $lengthFiles = $lengthHash ]
     then
     echo $lengthFiles "files to check."
@@ -173,53 +116,42 @@ if [ $lengthFiles = $lengthHash ]
     echo "Something is wrong."
     exit
 fi
-
 if hash md5 2>/dev/null
 then
     HashCmd="md5 -r"
 else
     HashCmd="md5sum"
 fi
-
 echo "Checking Files..."
-
 filesBad=0
-
 while (("$fileCount" <= "$lengthFiles")); do
     localHash=$($HashCmd "$update_dir/${Files[$fileCount]}" | awk '{ print $1 }')
     if [ "$localHash" != "${Hash[$fileCount]}" ] 
     then
         echo "Updating" ${Files[$fileCount]}
-        curl -o "$dl_dir/${Dl[$fileCount]}" "${Url[$fileCount]}" >/dev/null
+        curl --silent -o "$dl_dir/${Dl[$fileCount]}" "${Url[$fileCount]}" >/dev/null
         unzip -o -d "$update_dir" "$dl_dir/${Dl[$fileCount]}" >/dev/null
         filesBad=$(($filesBad+1))
     fi
     fileCount=$(($fileCount+1))
 done
-
 if (("$filesBad" != 0))
 then
     echo $filesBad "out of" $lengthFiles "updated."
 else
     echo "All files are already up to date."
 fi
-
 rm -rf $dl_dir
-sleep 5
-clear
 }
 
 post_install () {
-$cache_dir/winetricks vd=off > /dev/null
-$cache_dir/winetricks windowmanagerdecorated=n > /dev/null
+#$cache_dir/winetricks vd=off > /dev/null
+#$cache_dir/winetricks windowmanagerdecorated=n > /dev/null
 
 mkdir -p $HOME/bin
 curl -o $HOME/bin/uolaunch "https://raw.githubusercontent.com/AzureX1212/RequiemUOLinuxScript/master/Extras/uolaunch" > /dev/null
-curl -o $HOME/bin/uopatch "https://raw.githubusercontent.com/AzureX1212/RequiemUOLinuxScript/master/Extras/uopatch" > /dev/null
 chmod +x $HOME/bin/uolaunch
-chmod +x $HOME/bin/uopatch
 touch $cache_dir/.installed
-
 }
 
 help_m () {
@@ -241,35 +173,52 @@ update () {
 	$cache_dir/updater $PWD
 	exit 0
 }
+
+uninstall () {
+read -p "Do you want to keep the installer files? (For re-install) (Y/n)" yn
+case $yn in
+    [Yy]* )
+        echo "Removing $install_dir"
+        rm -rf $install_dir
+        echo "Removing uolaunch and uopatch"
+        rm $HOME/bin/uolaunch
+        ;;
+    [Nn]* )
+        echo "Removing $install_dir and $cache_dir"
+        rm -rf $install_dir
+        rm -rf $cache_dir
+        echo "Removing uolaunch and uopatch"
+        rm $HOME/bin/uolaunch
+        ;;
+    * ) echo "Please answer yes or no...";;
+esac
+}
 # This starts the main body of the script.
 # I placed everything in functions incase we want to skip steps later on.
 
 while getopts ":ruph" opt; do
   case $opt in
     r)
-			echo "Removing $install_dir and $cache_dir"
-            rm -rf $install_dir
-			rm -rf $cache_dir
-			echo "Removing uolaunch and uopatch"
-			rm $HOME/bin/uolaunch
-			rm $HOME/bin/uopatch
-			exit 0
+      uninstall
+      exit 0
       ;;
-		u)
-			update
-			;;
-        p)
-            patch_UO
-            exit 0
-            ;;
-		h)
+    u)
+      update
+      ;;
+    p)
+      patch_UO
+      read -p "Patcher is complete! Press enter to exit..."
+      clear
+      exit 0
+      ;;
+    h)
       help_m
-		  exit 0
-		  ;;
-       \?)
-		  echo "Invalid option: -$OPTARG" >&2
-		  exit 1
-		  ;;
+      exit 0
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
   esac
 done
 
@@ -283,8 +232,6 @@ read -p "Press enter when you're ready to proceed..."
 clear
 dir_setup
 dl_files
-winetricks_set
-pre_install
 install_UO
 patch_UO
 post_install

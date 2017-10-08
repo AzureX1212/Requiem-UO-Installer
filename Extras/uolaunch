@@ -6,8 +6,5 @@ export WINEPREFIX=$HOME/.RequiemUO
 export WINEDEBUG=-all # To get rid of error messages
 
 cd "$install_dir/drive_c/Program Files/UOS"
-# will call out some of the settings that should already be set, but will set it again anyways
-$cache_dir/winetricks vd=off > /dev/null
-$cache_dir/winetricks windowmanagerdecorated=n > /dev/null
-
-wine UOS.exe > /dev/null
+# will call out some of the settings that should already be set, but will set it again anyway
+wine UOS.exe
