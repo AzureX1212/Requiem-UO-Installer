@@ -72,7 +72,7 @@ then
 else
 	clear
 	echo "Downloading the client."
-	curl -o $cache_dir/UO.exe http://www.13thrones.com/files/UO.exe
+	curl -# -o $cache_dir/UO.exe http://www.13thrones.com/files/UO.exe
 fi
 
 if [ -f "$cache_dir/UOSteam.exe" ]
@@ -81,7 +81,7 @@ then
 else
 	clear
 	echo "Downloading UOSteam."
-	curl -o $cache_dir/UOSteam.exe http://uos-update.github.io/UOS_Latest.exe
+	curl -# -o $cache_dir/UOSteam.exe http://uos-update.github.io/UOS_Latest.exe 
 fi
 }
 
@@ -100,7 +100,7 @@ patch_UO () {
 clear
 touch $cache_dir/Updates.xml
 echo "Downloading update manifest..."
-curl --silent -o $cache_dir/Updates.xml "$contentUrl"   
+curl -# --silent -o $cache_dir/Updates.xml "$contentUrl"   
 mkdir -p $dl_dir
 declare -a Files
 declare -a Hash
@@ -157,7 +157,7 @@ while (("$fileCount" <= "$lengthFiles")); do
     if [ "$localHash" != "${Hash[$fileCount]}" ] 
     then
         echo "Updating" ${Files[$fileCount]}
-        curl --silent -o "$dl_dir/${Dl[$fileCount]}" "${Url[$fileCount]}" >/dev/null
+        curl -# --silent -o "$dl_dir/${Dl[$fileCount]}" "${Url[$fileCount]}" >/dev/null
         unzip -o -d "$update_dir" "$dl_dir/${Dl[$fileCount]}" >/dev/null
         filesBad=$(($filesBad+1))
     fi
@@ -177,7 +177,7 @@ post_install () {
 #$cache_dir/winetricks windowmanagerdecorated=n > /dev/null
 
 mkdir -p $HOME/bin
-curl -o $HOME/bin/uolaunch "https://raw.githubusercontent.com/AzureX1212/RequiemUOLinuxScript/master/Extras/uolaunch" > /dev/null
+curl -# -o $HOME/bin/uolaunch "https://raw.githubusercontent.com/AzureX1212/RequiemUOLinuxScript/master/Extras/uolaunch" > /dev/null
 chmod +x $HOME/bin/uolaunch
 touch $cache_dir/.installed
 }
@@ -196,7 +196,7 @@ update () {
 	clear
 	echo "Updating the script!"
 	mkdir -p $cache_dir
-	curl -o $cache_dir/updater https://raw.githubusercontent.com/AzureX1212/RequiemUOLinuxScript/master/Extras/updater > /dev/null
+	curl -# -o $cache_dir/updater https://raw.githubusercontent.com/AzureX1212/RequiemUOLinuxScript/master/Extras/updater > /dev/null
 	chmod +x $cache_dir/updater #make updater executable
 	$cache_dir/updater $PWD
 	exit 0
