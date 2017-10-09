@@ -75,14 +75,34 @@ else
 	curl -# -o $cache_dir/UO.exe http://www.13thrones.com/files/UO.exe
 fi
 
-if [ -f "$cache_dir/UOSteam.exe" ]
+if [ -f "$cache_dir/RazorUO.exe" ]
 then
-    echo "UOSteam.exe Found!"
+    echo "Razor UO Found!"
 else
 	clear
-	echo "Downloading UOSteam."
-	curl -# -o $cache_dir/UOSteam.exe http://uos-update.github.io/UOS_Latest.exe 
+	echo "Downloading Razor UO."
+	curl -# -o $cache_dir/RazorUO.exe http://www.uorazor.com/downloads/Razor_Latest.exe 
 fi
+
+if [ -f "$cache_dir/winetricks" ]
+then
+    echo "winetricks Found!"
+else
+	clear
+	echo "Downloading winetricks."
+	curl -# -o $cache_dir/winetricks https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
+    chmod +x $cache_dir/winetricks
+fi
+}
+
+pre_install () {
+clear
+echo "Installing some extra requirements."
+$cache_dir/winetricks -q winxp
+$cache_dir/winetricks -q dotnet45
+$cache_dir/winetricks -q dotnet30
+$cache_dir/winetricks -q dotnet20
+$cache_dir/winetricks -q msxml6
 }
 
 install_UO () {
@@ -91,9 +111,8 @@ echo "Installing UO Classic Client"
 #WINEPREFIX=$install_dir $cache_dir/winetricks vd=800x600
 wine "$cache_dir/UO.exe"
 clear
-echo "Now UOSteam"
-wine "$cache_dir/UOSteam.exe"
-clear
+echo "Now RazorUO"
+wine "$cache_dir/RazorUO.exe"
 }
 
 patch_UO () {
@@ -157,7 +176,7 @@ while (("$fileCount" <= "$lengthFiles")); do
     if [ "$localHash" != "${Hash[$fileCount]}" ] 
     then
         echo "Updating" ${Files[$fileCount]}
-        curl -# --silent -o "$dl_dir/${Dl[$fileCount]}" "${Url[$fileCount]}" >/dev/null
+        curl --silent -o "$dl_dir/${Dl[$fileCount]}" "${Url[$fileCount]}" >/dev/null
         unzip -o -d "$update_dir" "$dl_dir/${Dl[$fileCount]}" >/dev/null
         filesBad=$(($filesBad+1))
     fi
@@ -208,23 +227,28 @@ case $yn in
     [Yy]* )
         echo "Removing $install_dir"
         rm -rf $install_dir
-        echo "Removing uolaunch and uopatch"
+        echo "Removing uolaunch"
         rm $HOME/bin/uolaunch
         ;;
     [Nn]* )
         echo "Removing $install_dir and $cache_dir"
         rm -rf $install_dir
         rm -rf $cache_dir
-        echo "Removing uolaunch and uopatch"
+        echo "Removing uolaunch"
         rm $HOME/bin/uolaunch
         ;;
-    * ) echo "Please answer yes or no...";;
+    * ) 
+        echo "Removing $install_dir"
+        rm -rf $install_dir
+        echo "Removing uolaunch"
+        rm $HOME/bin/uolaunch
+        ;;
 esac
 }
 # This starts the main body of the script.
 # I placed everything in functions incase we want to skip steps later on.
 
-while getopts ":ruph" opt; do
+while getopts ":ruphw" opt; do
   case $opt in
     r)
       uninstall
@@ -243,6 +267,10 @@ while getopts ":ruph" opt; do
       help_m
       exit 0
       ;;
+    w)
+        pre_install
+        exit 0
+        ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
@@ -261,6 +289,7 @@ clear
 validate
 dir_setup
 dl_files
+pre_install
 install_UO
 patch_UO
 post_install

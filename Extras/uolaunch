@@ -5,6 +5,6 @@ cache_dir=$HOME/.cache/RequiemUO
 export WINEPREFIX=$HOME/.RequiemUO
 export WINEDEBUG=-all # To get rid of error messages
 
-cd "$install_dir/drive_c/Program Files/UOS"
+cd "$install_dir/drive_c/Program Files/Razor"
 # will call out some of the settings that should already be set, but will set it again anyway
-wine UOS.exe
+wine Razor.exe
