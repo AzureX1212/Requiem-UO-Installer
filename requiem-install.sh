@@ -30,6 +30,34 @@ export WINEDEBUG=-all # To get rid of error messages
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+validate () {
+clear
+#This will check that our needed requirements are installed
+needed=""
+if hash curl 2>/dev/null
+then
+    continue
+else
+    needed="curl"
+fi
+if hash wine 2>/dev/null
+then
+    continue
+else
+    needed="$needed wine"
+fi
+if [ -z "$needed"]
+then
+    continue
+else
+clear
+echo "The following applications were not found:$needed"
+echo "Please install them and run the script again."
+read -p "Press enter to exit..."
+clear
+exit 1
+fi
+}
 
 dir_setup() {
 #This will initialize our directory for storing the downloaded files for install, we keep it to speed up the script for reinstalls
@@ -230,6 +258,7 @@ echo "3. This is not a native souliton, it does require wine"
 echo "4. This is not a stable solution."
 read -p "Press enter when you're ready to proceed..."
 clear
+validate
 dir_setup
 dl_files
 install_UO
