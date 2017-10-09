@@ -99,9 +99,8 @@ pre_install () {
 clear
 echo "Installing some extra requirements."
 $cache_dir/winetricks -q winxp
-$cache_dir/winetricks -q dotnet45
-$cache_dir/winetricks -q dotnet30
 $cache_dir/winetricks -q dotnet20
+$cache_dir/winetricks -q gdiplus
 $cache_dir/winetricks -q msxml6
 }
 
@@ -222,7 +221,7 @@ update () {
 }
 
 uninstall () {
-read -p "Do you want to keep the installer files? (For re-install) (Y/n)" yn
+read -p "Do you want to keep the installer files? (For re-install) (Y/n): " yn
 case $yn in
     [Yy]* )
         echo "Removing $install_dir"
@@ -248,7 +247,7 @@ esac
 # This starts the main body of the script.
 # I placed everything in functions incase we want to skip steps later on.
 
-while getopts ":ruphw" opt; do
+while getopts ":ruphwi" opt; do
   case $opt in
     r)
       uninstall
@@ -269,6 +268,10 @@ while getopts ":ruphw" opt; do
       ;;
     w)
         pre_install
+        exit 0
+        ;;
+    i)
+        install_UO
         exit 0
         ;;
     \?)
