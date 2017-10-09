@@ -39,18 +39,6 @@ else
     clear
     exit 1
 fi
-
-if [ -f "/Applications/RequiemUO.app" ]
-then
-	continue
-else
-	clear
-	echo "RequiemUO.app is missing!"
-    echo "Please install it to /Applications"
-    read -p "Press enter to exit..."
-    clear
-    exit 1
-fi
 }
 
 patch () {
@@ -128,6 +116,7 @@ else
     echo "All files are already up to date."
 fi
 rm -rf $dl_dir
+chmod +x /Applications/RequiemUO.app/Contents/MacOS/*
 }
 clear
 validate
