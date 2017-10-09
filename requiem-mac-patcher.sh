@@ -6,6 +6,54 @@ contentUrl="http://13thrones.com/patches/MUL/Updates.xml"
 update_dir="$install_dir/drive_c/Program Files/Electronic Arts/Ultima Online Classic/"
 dl_dir=$cache_dir/Downloads
 
+validate () {
+clear
+#This will check that our needed requirements are installed
+needed=""
+if hash xmllint 2>/dev/null
+then
+    continue
+else
+    needed="xmllint"
+fi
+if hash md5 2>/dev/null
+then
+    continue
+else
+    needed="$needed md5"
+fi
+if hash curl 2>/dev/null
+then
+    continue
+else
+    needed="$needed curl"
+fi
+if [ -z "$needed"]
+then
+    continue
+else
+    clear
+    echo "The following applications were not found:$needed"
+    echo "Please install them and run the script again."
+    read -p "Press enter to exit..."
+    clear
+    exit 1
+fi
+
+if [ -f "/Applications/RequiemUO.app" ]
+then
+	continue
+else
+	clear
+	echo "RequiemUO.app is missing!"
+    echo "Please install it to /Applications"
+    read -p "Press enter to exit..."
+    clear
+    exit 1
+fi
+}
+
+patch () {
 clear
 mkdir -p $cache_dir
 touch $cache_dir/Updates.xml
@@ -80,3 +128,8 @@ else
     echo "All files are already up to date."
 fi
 rm -rf $dl_dir
+}
+clear
+validate
+patch
+clear
