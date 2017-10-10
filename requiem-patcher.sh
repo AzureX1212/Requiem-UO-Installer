@@ -5,6 +5,7 @@ install_dir="/Applications/RequiemUO.app/Contents/Resources"
 contentUrl="http://13thrones.com/patches/MUL/Updates.xml"
 update_dir="$install_dir/drive_c/Program Files/Electronic Arts/Ultima Online Classic/"
 dl_dir=$cache_dir/Downloads
+export TERM=xterm-256color
 
 validate () {
 clear
@@ -12,25 +13,26 @@ clear
 needed=""
 if hash xmllint 2>/dev/null
 then
-    continue
+    needed="$needed"
 else
     needed="xmllint"
 fi
 if hash md5 2>/dev/null
 then
-    continue
+    needed="$needed"
 else
     needed="$needed md5"
 fi
 if hash curl 2>/dev/null
 then
-    continue
+    needed="$needed"
 else
     needed="$needed curl"
 fi
+
 if [ -z "$needed"]
 then
-    continue
+    needed="$needed"
 else
     clear
     echo "The following applications were not found:$needed"
@@ -118,6 +120,7 @@ fi
 rm -rf $dl_dir
 chmod +x /Applications/RequiemUO.app/Contents/MacOS/*
 }
+
 clear
 validate
 patch
